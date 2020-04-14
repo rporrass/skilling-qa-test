@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+}
+
+group = 'interview.skilling'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 8
+targetCompatibility = 8
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+compileJava.dependsOn(processResources)
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
+    testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
+    testImplementation 'org.assertj:assertj-core:3.15.0'
+}
+
+import org.apache.tools.ant.taskdefs.condition.Os
+test {
+    File webdrivers = project.file("webdrivers")
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        systemProperty("webdriver.chrome.driver", new File("chromedriver.exe", webdrivers).getAbsolutePath())
+        systemProperty("webdriver.gecko.driver", new File("geckodriver.exe", webdrivers).getAbsolutePath())
+        systemProperty("webdriver.opera.driver", new File("operadriver.exe", webdrivers).getAbsolutePath())
+    }
+    else {
+        systemProperty("webdriver.chrome.driver", new File("chromedriver", webdrivers).getAbsolutePath())
+        systemProperty("webdriver.gecko.driver", new File("geckodriver", webdrivers).getAbsolutePath())
+        systemProperty("webdriver.opera.driver", new File("operadriver", webdrivers).getAbsolutePath())
+    }
+
+    systemProperty("browser.to.test", project.findProperty('browser.to.test') ?: 'firefox')
+
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
