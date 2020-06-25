@@ -8,3 +8,7 @@ steps:
     commands:
       - cd exercise1
       - ./gradlew test
+      
+trigger:
+  branch:
+  - master
