@@ -1,0 +1,10 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: backend
+    image: openjdk:8u102-jdk
+    commands:
+      - cd exercise1
+      - ./gradlew test
